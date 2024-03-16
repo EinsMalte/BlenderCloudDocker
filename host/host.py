@@ -78,6 +78,7 @@ dashboard.addLine("Server", "")
 dashboard.addLine("- GET Requests", "0")
 dashboard.addLine("- POST Requests", "0")
 
+
 # Start the server in a new thread
 def startServer():
     httpd.serve_forever()
