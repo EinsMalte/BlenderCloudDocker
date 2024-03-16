@@ -49,7 +49,7 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(b'GET request received')
         getRequests += 1
-        dashboard.changeValue("GET Requests", getRequests)
+        dashboard.changeValue("- GET Requests", getRequests)
 
     def do_POST(self):
         global postRequests
@@ -61,7 +61,16 @@ class CustomHandler(http.server.BaseHTTPRequestHandler):
         dashboard.changeValue("- POST Requests", postRequests)
 
 # Start the HTTP server with the custom handler
-httpd = socketserver.TCPServer(("", port), CustomHandler)
+portAvailable = False
+startAvailibility = time.time()
+while not portAvailable:
+    try:
+        CustomHandler.log_message = lambda *args: None
+        httpd = socketserver.TCPServer(("", port), CustomHandler)
+        portAvailable = True
+    except OSError:
+        dashboard.changeValue("Status", f"Port already in use...({time.time() - startAvailibility:.0f} s)")
+        time.sleep(1)
 
 # Get the host's hostname and port
 hostname = socket.gethostname()
@@ -87,3 +96,4 @@ serverThread = threading.Thread(target=startServer)
 serverThread.start()
 
 dashboard.changeValue("Status", "Ready")
+

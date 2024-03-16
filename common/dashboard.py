@@ -8,7 +8,7 @@ def printOut():
     global exists
     exists = True
     global __lastPrintedLines
-    consoleWidth = 80
+    consoleWidth = 50
     keyWidth = 0
     for key in lines.keys():
         if len(key) > keyWidth:
@@ -23,7 +23,7 @@ def printOut():
     
     __lastPrintedLines = 1
     
-    print(f"{title}")
+    print(f"{title}".ljust(consoleWidth))
     for key, value in lines.items():
         printout = "| "
         # Add padded key
