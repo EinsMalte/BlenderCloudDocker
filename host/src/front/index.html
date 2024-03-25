@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blender Render Cloud</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="topnav">
+        <span id="name">
+            <h1>Blender Render Cloud</h1>
+            <h2>Dashboard</h2>
+        </span>
+        <div id="links">
+            <a href="jobs.html">Jobs</a>
+            <a href="nodes.html">Nodes</a>
+            <a href="settings.html">Settings</a>
+            <a href="index.html">Overview</a>
+        </div>
+    </div>
+    <div id="mainwrapper">
+        <div id="overview">
+            <h1>Overview</h1>
+            <div class="box-bar" style="height: 150px;">
+                <div class="number-box">
+                    <h2>ACTIVE JOB</h2>
+                    <h3 id="jobPercentage">0 %</h3>
+                </div>
+                <div class="number-box">
+                    <h2>NODES</h2>
+                    <h3 id="nodeCount">0</h3>
+                </div>
+                <div class="number-box">
+                    <h2>IN QUEUE</h2>
+                    <h3 id="queueSize">0</h3>
+                </div>
+                <div class="button-box">
+                    <img src="herunterfahren.png" alt="shutdown">
+                    <h2>SHUTDOWN</h2>
+                </div>
+            </div>
+        </div>
+        <div id="credits">
+            <h1>Credits</h1>
+            <a href="https://www.flaticon.com/de/kostenlose-icons/herunterfahren"
+                title="herunterfahren Icons">Herunterfahren Icons erstellt von riajulislam - Flaticon</a>
+        </div>
+    </div>
+</body>
+
+<script>
+    // Refresh the node counter every 1 seconds by calling /nodeCount
+    // /nodeCount returns the number of nodes in the database as text#
+
+    const updateDelay = 5000;
+
+    var nodes = 0;
+    var nodesDisplayed = 0; // easing
+    setInterval(() => {
+        fetch('/nodeCount')
+            .then(response => response.text())
+            .then(data => {
+                nodes = parseInt(data);
+            });
+    }, updateDelay);
+    setInterval(() => {
+        nodesDisplayed += (nodes - nodesDisplayed) / 10;
+        document.getElementById('nodeCount').innerText = Math.round(nodesDisplayed);
+    }, 50);
+
+    // Refresh the queue size every 1 seconds by calling /queueSize
+    // /queueSize returns the number of jobs in the queue as text
+    var queueSize = 0;
+    var queueSizeDisplayed = 0; // easing
+    setInterval(() => {
+        fetch('/queueSize')
+            .then(response => response.text())
+            .then(data => {
+                queueSize = parseInt(data);
+            });
+    }, updateDelay);
+    setInterval(() => {
+        queueSizeDisplayed += (queueSize - queueSizeDisplayed) / 10;
+        document.getElementById('queueSize').innerText = Math.round(queueSizeDisplayed);
+    }, 50);
+
+    // Refresh the job percentage every 1 seconds by calling /jobPercentage
+    // /jobPercentage returns the percentage of the current job as text
+    var jobPercentage = 0;
+    var jobPercentageDisplayed = 0; // easing
+    setInterval(() => {
+        fetch('/jobPercentage')
+            .then(response => response.text())
+            .then(data => {
+                jobPercentage = parseInt(data);
+            });
+    }, updateDelay);
+    setInterval(() => {
+        jobPercentageDisplayed += (jobPercentage - jobPercentageDisplayed) / 10;
+        document.getElementById('jobPercentage').innerText = Math.round(jobPercentageDisplayed) + ' %';
+    }, 50);
+</script>
+
+</html>
